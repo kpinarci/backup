@@ -1,3 +1,29 @@
+## Install Borg Backup and Borgmatic
+
+```sh
+apt install -y software-properties-common zstd && \
+add-apt-repository -y ppa:costamagnagianfranco/borgbackup && \
+apt update && apt install -y borgbackup liblz4-tool && \
+apt install -y python3-pip python3-setuptools && \
+pip3 install --upgrade pip && \
+pip3 install --upgrade borgmatic
+```
+
+## Create a new ssh-key
+To enable passwordless authentication, generate a new SSH key and add the public key to the `authorized_keys` file.
+
+```sh
+ssh-keygen -t ed25519 -o -a 100 -C "$(whoami)@$(hostname)-borg-$(date -I)" -f ~/.ssh/borg_id_ed25519
+```
+
+## Restic ssh-key
+For better security, you can restic the ssh-key on `authorized_keys`.
+More details [here](https://www.thomas-krenn.com/de/wiki/Ausf%C3%BChrbare_SSH-Kommandos_per_authorized_keys_einschr%C3%A4nken)
+```shell
+# /root/.ssh/authorized_keys
+command="borg serve --restrict-to-path /home/<reponame>" <set here your ssh-pub-key>
+```
+
 ## Short way how to backup with borgmatic
 
 ## Configuration
