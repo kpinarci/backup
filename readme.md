@@ -155,6 +155,14 @@ borg delete ${BORG_REPO_URL}::'air-2023-05-21T15:36:57.109116'
 borg key change-passphrase -v ${BORG_REPO_URL}
 ```
 
+## Set Environments
+I will not save my Borg passphrase and backup server in the config file. Instead, I will add them to the `.bashrc` file for better security. Here's an example:
+
+```sh
+export BORG_REPO_URL=sh://USER@USER.your-storagebox.de:23/./<reponame>
+export BORG_PASSPHRASE='supersecretpasshrase'
+```
+
 ## Set cronjob
 
 For automatic backups move this file to `/etc/cron.d/` or set this command in sh:
