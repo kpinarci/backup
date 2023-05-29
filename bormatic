@@ -1,0 +1,3 @@
+
+# Every day on 01:00 am
+0 1 * * * root /usr/local/bin/borgmatic --log-file /var/log/borg/borgmatic.log --log-file-verbosity 2

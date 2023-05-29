@@ -1,0 +1,26 @@
+# Borgmatic Logrotate-Files (/etc/logrotate.d/borgmatic_logrotate)
+/var/log/borg/*.log
+{
+  maxsize 100M
+  rotate 4
+  weekly
+  missingok
+  notifempty
+  compress
+  delaycompress
+  sharedscripts
+  postrotate
+# invoke-rc.d rsyslog rotate >/dev/null 2>&1 || true
+  endscript
+}
+
+# maxsize 100M: Begrenzt die Größe einer Log-Datei auf 100 Megabyte. Wenn eine Datei diese Größe erreicht, wird sie rotiert.
+# rotate 4: Behält maximal 4 rotierte Versionen einer Log-Datei.
+# weekly: Rotiert die Log-Dateien wöchentlich. Das bedeutet, dass jede Woche eine neue Log-Datei erstellt wird und die älteste Log-Datei entfernt wird.
+# missingok: Setzt den Rotationsvorgang fort, auch wenn keine zu rotierenden Dateien gefunden werden.
+# notifempty: Führt die Rotation nur durch, wenn die Log-Dateien nicht leer sind. Leere Dateien werden nicht rotiert.
+# compress: Komprimiert die rotierten Log-Dateien mit dem gzip-Komprimierungsformat.
+# delaycompress: Verzögert die Komprimierung der rotierten Log-Dateien. Die Komprimierung erfolgt erst beim nächsten Rotationszyklus.
+# sharedscripts: Führt das postrotate-Skript nur einmal nach der Rotation aller Log-Dateien aus.
+# postrotate: Definiert ein Skript oder einen Befehl, der nach der Rotation der Log-Dateien ausgeführt wird. In diesem Fall ist der Bereich leer, es wird kein Befehl ausgeführt.
+# endscript: Gibt das Ende der Konfiguration für die Log-Rotation an.

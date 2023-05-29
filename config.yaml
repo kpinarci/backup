@@ -1,0 +1,92 @@
+location:
+    source_directories:
+        - /home/user/
+
+    repositories:
+      - path: ${BORG_REPO_URL} # ssh://USER@USER.your-storagebox.de:23/./<reponame>
+        label: hetzner-storagebox
+     #  - path: /mnt/backup
+     #    label: local # Local space or nfs
+
+    one_file_system: true
+    exclude_patterns:
+      - /home/user/Applications
+      - /home/user/Buildcase
+      - /home/user/FILE
+      - /home/user/Library
+      - /home/user/Movies
+      - /home/user/Music
+      - /home/user/Pictures
+      - /home/user/Public
+      - /home/user/test
+    exclude_caches: true
+
+storage:
+
+    encryption_passphrase: ${BORG_PASSPHRASE}
+    compression: auto,zstd # lz4 wenn zstd nicht vorhanden
+    retries: 3
+    retry_wait: 10
+    ssh_command: ${BORG_SSH_KEY} # "ssh -i /home/user/.ssh/id_ed25519"
+    relocated_repo_access_is_ok: true 
+
+consistency:
+    checks:
+      - name: repository
+        frequency: 2 weeks
+      - name: archives
+        frequency: 1 month
+      - name: extract
+        frequency: 1 month
+    check_last: 1
+
+output:
+    color: true
+
+hooks:
+    before_backup:
+        - echo "Starting backup"
+        - ping -q -c 1 ${BACKUP_SERVER_IP} > /dev/null || exit 44
+    #    - /opt/scripts/borgbackup_db.sh
+    before_prune:
+        - echo "Starting pruning"
+    before_check:
+        - echo "Starting Backup checks:"
+    after_backup:
+        - curl -s -k https://status.pinarci.de/api/push/STVK4UiM2V?status=up&msg=OK&ping= > /dev/null
+    after_prune:
+        - echo "Finished pruning."
+    after_check:
+        - echo "Finished checks successful"
+    on_error:
+      - echo "Error while creating a backup or running a backup hook."
+      - curl -d 'Error while creating a backup or running a backup hook. "{configuration_filename}" "{repository}"' ntfy.sh/backup
+      
+    # Call ntfy 
+    ntfy:
+        topic: backups
+        server: https://ntfy.pinarci.de
+        start:
+            title: A Borgmatic backup started
+            message: Watch this space...
+            tags: borgmatic,green_circle
+            priority: min
+        finish:
+            title: A Borgmatic backup completed successfully
+            message: Nice!
+            tags: borgmatic,white_check_mark
+            priority: min
+        fail:
+            title: A Borgmatic backup failed
+            message: You should probably fix it
+            tags: borgmatic,rotating_light,skull
+            priority: max
+        states:
+            - start
+            - finish
+            - fail
+retention:
+    keep_daily: 7
+    keep_weekly: 4
+    keep_monthly: 6
+    keep_yearly: 1
