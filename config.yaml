@@ -3,7 +3,7 @@ location:
         - /home/user/
 
     repositories:
-      - path: ${BORG_REPO_URL} # ssh://USER@USER.your-storagebox.de:23/./<reponame>
+      - path: ${BORG_REPO_URL} # ssh://USER@USER.your-storagebox.de:23/./$(hostname)
         label: hetzner-storagebox
      #  - path: /mnt/backup
      #    label: local # Local space or nfs
@@ -46,13 +46,17 @@ output:
 hooks:
     before_backup:
         - echo "Starting backup"
-        - ping -q -c 1 ${BACKUP_SERVER_IP} > /dev/null || exit 44
+    #    - echo "Stop all running Docker containers"
+    #    - docker stop $(docker ps -q) > /dev/null || exit 44
+    #    - ping -q -c 1 ${BACKUP_SERVER_IP} > /dev/null || exit 44
     #    - /opt/scripts/borgbackup_db.sh
     before_prune:
         - echo "Starting pruning"
     before_check:
         - echo "Starting Backup checks:"
     after_backup:
+    #    - echco "Start all stopped Docker containers"
+    #    - docker start $(docker ps -aqf "status=exited") > /dev/null || exit 44
         - curl -s -k https://status.pinarci.de/api/push/STVK4UiM2V?status=up&msg=OK&ping= > /dev/null
     after_prune:
         - echo "Finished pruning."
