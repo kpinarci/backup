@@ -10,15 +10,18 @@ pip3 install --upgrade borgmatic
 ```
 
 ## Create a new ssh-key
+
 To enable passwordless authentication, generate a new SSH key and add the public key to the `authorized_keys` file.
 
 ```sh
 ssh-keygen -t ed25519 -o -a 100 -C "$(whoami)@$(hostname)-borg-$(date -I)" -f ~/.ssh/borg_id_ed25519
 ```
 
-## Restic ssh-key
-For better security, you can restic the ssh-key on `authorized_keys`.
+## Restirick ssh-key
+
+For better security, you can restirick the ssh-key on `authorized_keys`.
 More details [here](https://www.thomas-krenn.com/de/wiki/Ausf%C3%BChrbare_SSH-Kommandos_per_authorized_keys_einschr%C3%A4nken)
+
 ```shell
 # /root/.ssh/authorized_keys
 command="borg serve --restrict-to-path /home/<reponame>" <set here your ssh-pub-key>
@@ -182,6 +185,7 @@ borg key change-passphrase -v ${BORG_REPO_URL}
 ```
 
 ## Set Environments
+
 I will not save my Borg passphrase and backup server in the config file. Instead, I will add them to the `.bashrc` file for better security. Here's an example:
 
 ```sh
