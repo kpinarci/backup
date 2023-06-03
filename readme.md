@@ -17,9 +17,8 @@ To enable passwordless authentication, generate a new SSH key and add the public
 ssh-keygen -t ed25519 -o -a 100 -C "$(whoami)@$(hostname)-borg-$(date -I)" -f ~/.ssh/borg_id_ed25519
 ```
 
-## Restirick ssh-key
-
-For better security, you can restirick the ssh-key on `authorized_keys`.
+## Restrict ssh-key
+For better security, you can restrict the ssh-key on `authorized_keys`.
 More details [here](https://www.thomas-krenn.com/de/wiki/Ausf%C3%BChrbare_SSH-Kommandos_per_authorized_keys_einschr%C3%A4nken)
 
 ```shell
